@@ -21,7 +21,6 @@ import com.weixf.blog.vo.params.ArticleParam;
 import com.weixf.blog.vo.params.PageParams;
 import org.joda.time.DateTime;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -32,16 +31,34 @@ import java.util.List;
 @Service
 public class ArticleServiceImpl implements ArticleService {
 
-    @Autowired
-    private ArticleMapper articleMapper;
-    @Autowired
-    private TagService tagService;
+    private final ArticleMapper articleMapper;
 
-    @Autowired
-    private SysUserService sysUserService;
+    private final ArticleTagMapper articleTagMapper;
 
-    @Autowired
-    private ArticleTagMapper articleTagMapper;
+    private final ArticleBodyMapper articleBodyMapper;
+
+    private final TagService tagService;
+
+    private final SysUserService sysUserService;
+
+    private final CategoryService categoryService;
+
+    private final ThreadService threadService;
+
+    public ArticleServiceImpl(
+            ArticleMapper articleMapper, ArticleTagMapper articleTagMapper,
+            ArticleBodyMapper articleBodyMapper, TagService tagService,
+            SysUserService sysUserService, CategoryService categoryService,
+            ThreadService threadService) {
+        this.articleMapper = articleMapper;
+        this.articleTagMapper = articleTagMapper;
+        this.articleBodyMapper = articleBodyMapper;
+        this.tagService = tagService;
+        this.sysUserService = sysUserService;
+        this.categoryService = categoryService;
+        this.threadService = threadService;
+    }
+
 
     @Override
     public Result listArticle(PageParams pageParams) {
@@ -85,8 +102,6 @@ public class ArticleServiceImpl implements ArticleService {
         return Result.success(archivesList);
     }
 
-    @Autowired
-    private ThreadService threadService;
 
     @Override
     public Result findArticleById(Long articleId) {
@@ -172,10 +187,6 @@ public class ArticleServiceImpl implements ArticleService {
         return articleVoList;
     }
 
-    @Autowired
-    private CategoryService categoryService;
-
-
     private ArticleVo copy(Article article, boolean isTag, boolean isAuthor, boolean isBody, boolean isCategory) {
         ArticleVo articleVo = new ArticleVo();
         articleVo.setId(String.valueOf(article.getId()));
@@ -201,9 +212,6 @@ public class ArticleServiceImpl implements ArticleService {
         }
         return articleVo;
     }
-
-    @Autowired
-    private ArticleBodyMapper articleBodyMapper;
 
     private ArticleBodyVo findArticleBodyById(Long bodyId) {
         ArticleBody articleBody = articleBodyMapper.selectById(bodyId);
