@@ -18,7 +18,7 @@
     </resultMap>
 
     <select id="listArchives" resultType="com.weixf.blog.dao.dos.Archives">
-        select year (FROM_UNIXTIME(create_date/1000)) as year, month (FROM_UNIXTIME(create_date/1000)) as month, count(*) as count
+        select year (FROM_UNIXTIME(create_date/1000)) as year, month (FROM_UNIXTIME(create_date/1000)) as month, count (*) as count
         from ms_article
         group by year, month
     </select>

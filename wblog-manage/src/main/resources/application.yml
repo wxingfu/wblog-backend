@@ -35,9 +35,9 @@ mybatis-plus:
 aliyun:
   oss:
     endpoint: oss-cn-hangzhou.aliyuncs.com
-    key-id: 
-    key-secret: 
+    key-id:
+    key-secret:
     bucket-name: pictures01
 qiniu:
-  accessKey: 
+  accessKey:
   accessSecretKey: 
