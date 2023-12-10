@@ -11,7 +11,11 @@ import com.weixf.blog.dao.pojo.Article;
 import com.weixf.blog.dao.pojo.ArticleBody;
 import com.weixf.blog.dao.pojo.ArticleTag;
 import com.weixf.blog.dao.pojo.SysUser;
-import com.weixf.blog.service.*;
+import com.weixf.blog.service.ArticleService;
+import com.weixf.blog.service.CategoryService;
+import com.weixf.blog.service.SysUserService;
+import com.weixf.blog.service.TagService;
+import com.weixf.blog.service.ThreadService;
 import com.weixf.blog.utils.UserThreadLocal;
 import com.weixf.blog.vo.ArticleBodyVo;
 import com.weixf.blog.vo.ArticleVo;
@@ -76,9 +80,9 @@ public class ArticleServiceImpl implements ArticleService {
         queryWrapper.select(Article::getId, Article::getTitle);
         //"limit"字待串后要加空格，不要忘记加空格，不然会把数据拼到一起
         queryWrapper.last("limit " + limit);
-        //select id,title from article order by view_counts desc limt 5
+        // select id,title from article order by view_counts desc limt 5
         List<Article> articles = articleMapper.selectList(queryWrapper);
-        //返回vo对象
+        // 返回vo对象
         return Result.success(copyList(articles, false, false));
     }
 
@@ -89,10 +93,10 @@ public class ArticleServiceImpl implements ArticleService {
         queryWrapper.select(Article::getId, Article::getTitle);
         //"limit"字待串后要加空格，不要忘记加空格，不然会把数据拼到一起
         queryWrapper.last("limit " + limit);
-        //select id,title from article order by create_data desc limt 5
+        // select id,title from article order by create_data desc limt 5
         List<Article> articles = articleMapper.selectList(queryWrapper);
 
-        //返回vo对象
+        // 返回vo对象
         return Result.success(copyList(articles, false, false));
     }
 
@@ -109,11 +113,11 @@ public class ArticleServiceImpl implements ArticleService {
          * 1、根据id查询文章信息
          * 2、根据bodyId和categoryid去做关联查询
          */
-        //查出的表是这个
+        // 查出的表是这个
         Article article = this.articleMapper.selectById(articleId);
         ArticleVo articleVo = copy(article, true, true, true, true);
 
-        //线程池
+        // 线程池
         threadService.updateArticleViewCount(articleMapper, article);
         return Result.success(articleVo);
     }
@@ -126,7 +130,7 @@ public class ArticleServiceImpl implements ArticleService {
          * 3、标签 要将标签加入到关联列表当中
          * 4、body 内容存储 article bodyId
          */
-        //此接口要加入到登陆拦截当中
+        // 此接口要加入到登陆拦截当中
         SysUser sysUser = UserThreadLocal.get();
         Article article = new Article();
         article.setAuthorId(sysUser.getId());
@@ -137,11 +141,11 @@ public class ArticleServiceImpl implements ArticleService {
         article.setCommentCounts(0);
         article.setCreateDate(System.currentTimeMillis());
         article.setCategoryId(Long.valueOf(articleParam.getCategory().getId()));
-        //插入之后会生成一个文章id
-        //官网解释:insert后主键会自动set到实体的ID字段，所以你只需要getID()就好了
-        //利用主键自增，mp的insert操作后id值会写回到参数对象中，mybatisplus的回写操作
+        // 插入之后会生成一个文章id
+        // 官网解释:insert后主键会自动set到实体的ID字段，所以你只需要getID()就好了
+        // 利用主键自增，mp的insert操作后id值会写回到参数对象中，mybatisplus的回写操作
         this.articleMapper.insert(article);
-        //tag
+        // tag
         List<TagVo> tags = articleParam.getTags();
         if (tags != null) {
             for (TagVo tag : tags) {
@@ -154,15 +158,15 @@ public class ArticleServiceImpl implements ArticleService {
             }
 
         }
-        //body
+        // body
         ArticleBody articleBody = new ArticleBody();
         articleBody.setArticleId(article.getId());
         articleBody.setContent(articleParam.getBody().getContent());
         articleBody.setContentHtml(articleParam.getBody().getContentHtml());
         articleBodyMapper.insert(articleBody);
-        //插入完之后再给一个id
+        // 插入完之后再给一个id
         article.setBodyId(articleBody.getId());
-        //MybatisPlus中的save方法什么时候执行insert，什么时候执行update
+        // MybatisPlus中的save方法什么时候执行insert，什么时候执行update
         // https://www.cxyzjd.com/article/Horse7/103868144
         articleMapper.updateById(article);
 
@@ -191,9 +195,9 @@ public class ArticleServiceImpl implements ArticleService {
         ArticleVo articleVo = new ArticleVo();
         articleVo.setId(String.valueOf(article.getId()));
         BeanUtils.copyProperties(article, articleVo);
-        //时间没法copy因为是long型
+        // 时间没法copy因为是long型
         articleVo.setCreateDate(new DateTime(article.getCreateDate()).toString("yyyy-MM-dd HH:mm"));
-        //并不是所有的接口 都需要标签 ，作者信息
+        // 并不是所有的接口 都需要标签 ，作者信息
         if (isTag) {
             Long articleId = article.getId();
             articleVo.setTags(tagService.findTagsByArticleId(articleId));

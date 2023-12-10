@@ -29,7 +29,7 @@ public class CommentsServiceImpl implements CommentsService {
     @Autowired
     private ArticleMapper articleMapper;
 
-    //查询作者信息
+    // 查询作者信息
     @Autowired
     private SysUserService sysUserService;
 
@@ -42,19 +42,19 @@ public class CommentsServiceImpl implements CommentsService {
          * 4、如果有 根据评论id进行查询（parent_id)
          */
         LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
-        //根据文章id进行查询
+        // 根据文章id进行查询
         queryWrapper.eq(Comment::getArticleId, id);
-        //根据层级关系进行查询
+        // 根据层级关系进行查询
         queryWrapper.eq(Comment::getLevel, 1);
         List<Comment> comments = commentMapper.selectList(queryWrapper);
         List<CommentVo> commentVoList = copyList(comments);
         return Result.success(commentVoList);
     }
 
-    //登陆
+    // 登陆
     @Override
     public Result comment(CommentParam commentParam) {
-        //拿到当前登陆用户
+        // 拿到当前登陆用户
         SysUser sysUser = UserThreadLocal.get();
         Comment comment = new Comment();
         Long articleId = commentParam.getArticleId();
@@ -68,7 +68,7 @@ public class CommentsServiceImpl implements CommentsService {
         } else {
             comment.setLevel(2);
         }
-        //如果是空，parent就是0
+        // 如果是空，parent就是0
         comment.setParentId(parent == null ? 0 : parent);
         Long toUserId = commentParam.getToUserId();
         comment.setToUid(toUserId == null ? 0 : toUserId);
@@ -101,21 +101,21 @@ public class CommentsServiceImpl implements CommentsService {
 
     private CommentVo copy(Comment comment) {
         CommentVo commentVo = new CommentVo();
-        //只能拷贝类型相同的
+        // 只能拷贝类型相同的
         BeanUtils.copyProperties(comment, commentVo);
         commentVo.setId(String.valueOf(comment.getId()));
-        //作者信息
+        // 作者信息
         Long authorId = comment.getAuthorId();
         UserVo userVo = this.sysUserService.findUserVoById(authorId);
         commentVo.setAuthor(userVo);
-        //子评论
+        // 子评论
         Integer level = comment.getLevel();
         if (level == 1) {
             Long id = comment.getId();
             List<CommentVo> commentVoList = findCommentsByParentId(id);
             commentVo.setChildrens(commentVoList);
         }
-        //to user 给谁评论
+        // to user 给谁评论
         if (level > 1) {
             Long toUid = comment.getToUid();
             UserVo touserVo = this.sysUserService.findUserVoById(toUid);

@@ -20,7 +20,7 @@ public class LoginController {
 
     @PostMapping
     public Result login(@RequestBody LoginParam loginParam) {
-        //登陆 验证用户 访问用户表
+        // 登陆 验证用户 访问用户表
         return loginService.login(loginParam);
 
     }

@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 public class SysUserServiceImpl implements SysUserService {
 
 
-    //这个爆红只需要在对应的mapper上加上@Repository,让spring识别到即可解决爆红的问题
+    // 这个爆红只需要在对应的mapper上加上@Repository,让spring识别到即可解决爆红的问题
     @Autowired
     private SysUserMapper sysUserMapper;
 
@@ -28,8 +28,8 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     public UserVo findUserVoById(Long id) {
-        //根据id查询
-        //为防止sysUser为空增加一个判断
+        // 根据id查询
+        // 为防止sysUser为空增加一个判断
         SysUser sysUser = sysUserMapper.selectById(id);
         if (sysUser == null) {
             sysUser = new SysUser();
@@ -45,8 +45,8 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     public SysUser findUserById(Long id) {
-        //根据id查询
-        //为防止sysUser为空增加一个判断
+        // 根据id查询
+        // 为防止sysUser为空增加一个判断
         SysUser sysUser = sysUserMapper.selectById(id);
         if (sysUser == null) {
             sysUser = new SysUser();
@@ -60,9 +60,9 @@ public class SysUserServiceImpl implements SysUserService {
         LambdaQueryWrapper<SysUser> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(SysUser::getAccount, account);
         queryWrapper.eq(SysUser::getPassword, password);
-        //account id 头像 名称
+        // account id 头像 名称
         queryWrapper.select(SysUser::getAccount, SysUser::getId, SysUser::getAdmin, SysUser::getNickname);
-        //增加查询效率，只查询一条
+        // 增加查询效率，只查询一条
         queryWrapper.last("limit 1");
         return sysUserMapper.selectOne(queryWrapper);
     }
@@ -75,7 +75,7 @@ public class SysUserServiceImpl implements SysUserService {
          * 2、如果校验失败，返回错误
          *3、如果成功，返回对应结果 LoginUserVo
          */
-        //去loginservice中去校验token
+        // 去loginservice中去校验token
         SysUser sysUser = loginService.checkToken(token);
         if (sysUser == null) {
             return Result.fail(ErrorCode.TOKEN_ERROR.getCode(), ErrorCode.TOKEN_ERROR.getMsg());
@@ -93,15 +93,15 @@ public class SysUserServiceImpl implements SysUserService {
     public SysUser findUserByAccount(String account) {
         LambdaQueryWrapper<SysUser> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(SysUser::getAccount, account);
-        //确保只能查询一条
+        // 确保只能查询一条
         queryWrapper.last("limit 1");
         return this.sysUserMapper.selectOne(queryWrapper);
     }
 
     @Override
     public void save(SysUser sysUser) {
-        //保存用户这个id会自动生成
-        //默认生成的id是分布式id，从采用的雪花算法
+        // 保存用户这个id会自动生成
+        // 默认生成的id是分布式id，从采用的雪花算法
         this.sysUserMapper.insert(sysUser);
 
     }

@@ -14,12 +14,12 @@ public class WebMVCConfig implements WebMvcConfigurer {
     @Autowired
     private LoginInterceptor loginInterceptor;
 
-    //实现跨域请求
+    // 实现跨域请求
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOriginPatterns("*")
-                .allowedMethods("GET","HEAD","POST","PUT","DELETE","OPTIONS")
+                .allowedMethods("GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowCredentials(true)
                 .maxAge(3600)
                 .allowedHeaders("*");
@@ -35,7 +35,7 @@ public class WebMVCConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        //拦截test接口，后续实际遇到需要拦截的接口时，在配置为真正的拦截接口
+        // 拦截test接口，后续实际遇到需要拦截的接口时，在配置为真正的拦截接口
         registry.addInterceptor(loginInterceptor)
                 .addPathPatterns("/test")
                 .addPathPatterns("/comments/create/change")

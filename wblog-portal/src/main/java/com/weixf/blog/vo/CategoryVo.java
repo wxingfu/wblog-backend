@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class CategoryVo {
 
-    //id，图标路径，图标名称
+    // id，图标路径，图标名称
     private String id;
 
     private String avatar;

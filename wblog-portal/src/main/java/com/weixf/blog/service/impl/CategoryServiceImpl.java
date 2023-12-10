@@ -36,7 +36,7 @@ public class CategoryServiceImpl implements CategoryService {
         LambdaQueryWrapper<Category> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.select(Category::getId, Category::getCategoryName);
         List<Category> categories = categoryMapper.selectList(queryWrapper);
-        //页面交互的对象
+        // 页面交互的对象
 
         return Result.success(copyList(categories));
     }
@@ -62,7 +62,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         // 没有任何参数，所有一个空的LambdaQueryWrapper即可
         List<Category> categories = categoryMapper.selectList(new LambdaQueryWrapper<>());
-        //页面交互的对象
+        // 页面交互的对象
 
         return Result.success(copyList(categories));
     }
@@ -70,7 +70,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Result categoryDetailById(Long id) {
         Category category = categoryMapper.selectById(id);
-        //转换为CategoryVo
+        // 转换为CategoryVo
         return Result.success(copy(category));
     }
 }

@@ -1,3 +1,7 @@
 /.idea
 *.iml
 /target
+/wblog-portal/target/
+/wblog-portal/*.iml
+/wblog-manage/target/
+/wblog-manage/*.iml

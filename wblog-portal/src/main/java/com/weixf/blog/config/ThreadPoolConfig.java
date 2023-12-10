@@ -8,9 +8,9 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import java.util.concurrent.Executor;
 
 
-//https://www.jianshu.com/p/0b8443b1adc9   关于@Configuration和@Bean的用法和理解
+// https://www.jianshu.com/p/0b8443b1adc9   关于@Configuration和@Bean的用法和理解
 @Configuration
-@EnableAsync //开启多线程
+@EnableAsync // 开启多线程
 public class ThreadPoolConfig {
 
     @Bean("taskExcutor")
@@ -23,7 +23,7 @@ public class ThreadPoolConfig {
         // 设置最大线程数
         executor.setMaxPoolSize(20);
 
-        //配置队列大小
+        // 配置队列大小
         executor.setQueueCapacity(Integer.MAX_VALUE);
 
         // 设置线程活跃时间（秒）
@@ -35,7 +35,7 @@ public class ThreadPoolConfig {
         // 等待所有任务结束后再关闭线程池
         executor.setWaitForTasksToCompleteOnShutdown(true);
 
-        //执行初始化
+        // 执行初始化
         executor.initialize();
 
         return executor;

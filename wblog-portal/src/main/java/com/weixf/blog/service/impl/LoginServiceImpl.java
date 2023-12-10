@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 
-//Spring 自动扫描组件// https://blog.csdn.net/u010002184/article/details/72870065
+// Spring 自动扫描组件// https://blog.csdn.net/u010002184/article/details/72870065
 // @Component – 指示自动扫描组件。
 //@Repository – 表示在持久层DAO组件。
 //@Service – 表示在业务层服务组件。
@@ -26,13 +26,20 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class LoginServiceImpl implements LoginService {
 
+    // 加密盐用于加密
+    private static final String slat = "mszlu!@#";
     @Autowired
     private SysUserService sysUserService;
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
-    //加密盐用于加密
-    private static final String slat = "mszlu!@#";
+    // 跑出新的密码
+    public static void main(String[] args) {
+        String password;
+        password = "admin";
+        password = DigestUtils.md5Hex(password + slat);
+        System.out.println(password);
+    }
 
     @Override
     public Result login(LoginParam loginParam) {
@@ -58,29 +65,29 @@ public class LoginServiceImpl implements LoginService {
         }
         String token = JWTUtils.createToken(sysUser.getId());
         // JSON.toJSONString 用法    https://blog.csdn.net/antony9118/article/details/71023009
-        //过期时间是一百天
-        //redisTemplate用法  https://blog.csdn.net/lydms/article/details/105224210
+        // 过期时间是一百天
+        // redisTemplate用法  https://blog.csdn.net/lydms/article/details/105224210
         redisTemplate.opsForValue().set("TOKEN_" + token, JSON.toJSONString(sysUser), 100, TimeUnit.DAYS);
         return Result.success(token);
     }
 
     @Override
     public SysUser checkToken(String token) {
-        //token为空返回null
+        // token为空返回null
         if (StringUtils.isBlank(token)) {
             return null;
         }
         Map<String, Object> stringObjectMap = JWTUtils.checkToken(token);
-        //解析失败
+        // 解析失败
         if (stringObjectMap == null) {
             return null;
         }
-        //如果成功
+        // 如果成功
         String userJson = redisTemplate.opsForValue().get("TOKEN_" + token);
         if (StringUtils.isBlank(userJson)) {
             return null;
         }
-        //解析回sysUser对象
+        // 解析回sysUser对象
         return JSON.parseObject(userJson, SysUser.class);
     }
 
@@ -120,7 +127,7 @@ public class LoginServiceImpl implements LoginService {
         sysUser.setCreateDate(System.currentTimeMillis());
         sysUser.setLastLogin(System.currentTimeMillis());
         sysUser.setAvatar("/static/img/logo.b3a48c0.png");
-        sysUser.setAdmin(1); //1 为true
+        sysUser.setAdmin(1); // 1 为true
         sysUser.setDeleted(0); // 0 为false
         sysUser.setSalt("");
         sysUser.setStatus("");
@@ -132,13 +139,5 @@ public class LoginServiceImpl implements LoginService {
         redisTemplate.opsForValue().set("TOKEN_" + token, JSON.toJSONString(sysUser), 100, TimeUnit.DAYS);
         return Result.success(token);
 
-    }
-
-    //跑出新的密码
-    public static void main(String[] args) {
-        String password;
-        password = "admin";
-        password = DigestUtils.md5Hex(password + slat);
-        System.out.println(password);
     }
 }

@@ -26,24 +26,24 @@ public class CacheAspect {
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
-    //切点，注解加在那里，那里就是切点
+    // 切点，注解加在那里，那里就是切点
     @Pointcut("@annotation(com.weixf.blog.common.cache.Cache)")
     public void pt() {
     }
 
-    //环绕通知，在方法的前后进行增强
+    // 环绕通知，在方法的前后进行增强
     @Around("pt()")
     public Object around(ProceedingJoinPoint pjp) {
         try {
             Signature signature = pjp.getSignature();
-            //类名
+            // 类名
             String className = pjp.getTarget().getClass().getSimpleName();
-            //调用的方法名
+            // 调用的方法名
             String methodName = signature.getName();
 
             Class[] parameterTypes = new Class[pjp.getArgs().length];
             Object[] args = pjp.getArgs();
-            //参数
+            // 参数
             StringBuilder params = new StringBuilder();
             for (int i = 0; i < args.length; i++) {
                 if (args[i] != null) {
@@ -54,17 +54,17 @@ public class CacheAspect {
                 }
             }
             if (StringUtils.isNotEmpty(params.toString())) {
-                //加密 以防出现key过长以及字符转义获取不到的情况
+                // 加密 以防出现key过长以及字符转义获取不到的情况
                 params = new StringBuilder(DigestUtils.md5Hex(params.toString()));
             }
             Method method = pjp.getSignature().getDeclaringType().getMethod(methodName, parameterTypes);
-            //获取Cache注解
+            // 获取Cache注解
             Cache annotation = method.getAnnotation(Cache.class);
-            //缓存过期时间
+            // 缓存过期时间
             long expire = annotation.expire();
-            //缓存名称
+            // 缓存名称
             String name = annotation.name();
-            //先从redis获取
+            // 先从redis获取
             String redisKey = name + "::" + className + "::" + methodName + "::" + params;
             String redisValue = redisTemplate.opsForValue().get(redisKey);
             if (StringUtils.isNotEmpty(redisValue)) {
@@ -73,7 +73,7 @@ public class CacheAspect {
                 log.info("缓存数据: {}", result.toString());
                 return result;
             }
-            //调用方法
+            // 调用方法
             Object proceed = pjp.proceed();
             redisTemplate.opsForValue().set(redisKey, JSON.toJSONString(proceed), Duration.ofMillis(expire));
             log.info("存入缓存~~~ {},{}", className, methodName);

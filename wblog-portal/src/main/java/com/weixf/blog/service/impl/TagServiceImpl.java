@@ -47,7 +47,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public List<TagVo> findTagsByArticleId(Long articleId) {
-        //mybatisplus无法进行多表查询
+        // mybatisplus无法进行多表查询
         List<Tag> tags = tagMapper.findTagsByArticleId(articleId);
         return copyList(tags);
     }
@@ -60,13 +60,13 @@ public class TagServiceImpl implements TagService {
          * 2、查询 根据tag_id分组计数，从大到小排列取前limit个
          */
         List<Long> tagIds = tagMapper.findHotsTagIds(limit);
-        //因为id in（1,2,3） 里面不能为空所以我们需要进行判断
+        // 因为id in（1,2,3） 里面不能为空所以我们需要进行判断
         //  CollectionUtils.isEmpty作用 https://blog.csdn.net/qq_42848910/article/details/105717235
         if (CollectionUtils.isEmpty(tagIds)) {
             return Result.success(Collections.emptyList());
         }
-        //需求的是tagId 和tagName Tag对象
-        //我们的sql语句类似于select * from tag where id in (1,2,3)
+        // 需求的是tagId 和tagName Tag对象
+        // 我们的sql语句类似于select * from tag where id in (1,2,3)
         List<Tag> tagList = tagMapper.findTagsByTagIds(tagIds);
         return Result.success(tagList);
     }
