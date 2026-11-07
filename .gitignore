@@ -1,7 +1,76 @@
-/.idea
+# ============================================================
+# IntelliJ IDEA
+# ============================================================
+.idea/
 *.iml
-/target
-/wblog-portal/target/
-/wblog-portal/*.iml
-/wblog-manage/target/
-/wblog-manage/*.iml
+*.ipr
+*.iws
+out/
+
+# ============================================================
+# Maven / 构建产物（target/ 不带前导斜杠，匹配任意层级）
+# ============================================================
+target/
+*.class
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.flattened-pom.xml
+
+# ============================================================
+# Eclipse / Spring Tool Suite
+# ============================================================
+.apt_generated/
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache/
+bin/
+
+# ============================================================
+# VS Code / 其他编辑器
+# ============================================================
+.vscode/
+*.code-workspace
+*.swp
+*.swo
+*~
+*.bak
+*.orig
+*.tmp
+*.rej
+
+# ============================================================
+# 操作系统生成文件
+# ============================================================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ============================================================
+# 日志 / 运行时临时文件
+# ============================================================
+*.log
+*.log.*
+logs/
+nohup.out
+hs_err_pid*
+replay_pid*
+
+# ============================================================
+# 本地私有配置（含口令、密钥，禁止提交）
+# ============================================================
+.env
+.env.*
+!.env.example
+application-local.yml
+application-local.properties
+application-*-local.yml
+application-*-local.properties
